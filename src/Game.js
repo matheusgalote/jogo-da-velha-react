@@ -58,8 +58,8 @@ const Game = () => {
           player % 2 === 0 || player === 0 ? casas[index].player = 'X' : casas[index].player = 'O'
 
           // Checa as combinações possíveis e seta o vencedor
-          indexCombination.forEach(combination => { 
-            return checked[combination[0]].player !== '' && checked[combination[0]].player === checked[combination[1]].player && checked[combination[1]].player === checked[combination[2]].player  ? setWinner({"winner": true, "player": checked[combination[1]].player}) : '';
+          indexCombination.forEach(combination => {
+            return checked[combination[0]].player !== '' && checked[combination[0]].player === checked[combination[1]].player && checked[combination[1]].player === checked[combination[2]].player ? setWinner({ "winner": true, "player": checked[combination[1]].player, "combination": [combination[0], combination[1], combination[2]] }) : '';
           });
 
           setChecked([...casas])
@@ -70,22 +70,38 @@ const Game = () => {
     setPlayer(player + 1);
   }
 
-  if (winner.winner) return <div>Temos um vencedor! Saudações ao novo imperador: {winner.player}</div>
+  const startNewGame = () => {
+    if(window.confirm('Deseja iniciar um novo jogo?') === true) {
+      window.location.reload();
+    }
+
+  }
+
+  // if (winner.winner) return <div>Temos um vencedor! Saudações ao novo imperador: {winner.player}</div>
 
   return (
-    <Grid>
-      {
-        casas.map(casa => {
-          return (
-            <Cel key={casa.position} onClick={handleClick} id={casa.position}>
-              {
-                casa.player
+    <>
+      {winner.winner && <div>Temos um vencedor! Saudações ao novo imperador: {winner.player}</div>}
+      <Grid>
+        {
+          casas.map((casa, index) => {
+            let styles = {};
+            if (winner.winner) {
+              if (winner.combination.includes(index)) {
+                styles = { background: '#D3EBCD', textDecoration: 'underline', border: '1px solid #2B7A0B', color: '#1A4D2E', fontWeight: 'bold' }
               }
-            </Cel>
-          )
-        })
-      }
-    </Grid>
+            }
+            return (
+              <Cel style={styles} key={casa.position} onClick={!winner.winner ? handleClick : startNewGame} id={casa.position}>
+                {
+                  casa.player
+                }
+              </Cel>
+            )
+          })
+        }
+      </Grid>
+    </>
   )
 }
 
