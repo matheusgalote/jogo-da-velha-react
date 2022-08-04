@@ -2,15 +2,15 @@ import React from 'react'
 import styled from 'styled-components';
 
 const casas = [
-  { "checked": false, "position": 'A', 'player': '' },
-  { "checked": false, "position": 'B', 'player': '' },
-  { "checked": false, "position": 'C', 'player': '' },
-  { "checked": false, "position": 'D', 'player': '' },
-  { "checked": false, "position": 'E', 'player': '' },
-  { "checked": false, "position": 'F', 'player': '' },
-  { "checked": false, "position": 'G', 'player': '' },
-  { "checked": false, "position": 'H', 'player': '' },
-  { "checked": false, "position": 'J', 'player': '' },
+  { "checked": false, "position": 'A', 'player': '', 'name': '' },
+  { "checked": false, "position": 'B', 'player': '', 'name': '' },
+  { "checked": false, "position": 'C', 'player': '', 'name': '' },
+  { "checked": false, "position": 'D', 'player': '', 'name': '' },
+  { "checked": false, "position": 'E', 'player': '', 'name': '' },
+  { "checked": false, "position": 'F', 'player': '', 'name': '' },
+  { "checked": false, "position": 'G', 'player': '', 'name': '' },
+  { "checked": false, "position": 'H', 'player': '', 'name': '' },
+  { "checked": false, "position": 'J', 'player': '', 'name': '' },
 
 ]
 
@@ -31,18 +31,19 @@ const Grid = styled.div`
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: auto;
   max-width: 9rem;
+  margin-top: 4rem;
 `
 
 const Cel = styled.div`
   border: 1px solid #ccc;
-  width: 3rem;
-  height: 3rem;
+  width: 5rem;
+  height: 5rem;
   display: flex;
   justify-content: center;
   align-items: center;
 `
 
-const Game = () => {
+const Game = ({ jogador1, jogador2 }) => {
 
   const [checked, setChecked] = React.useState(casas);
   const [player, setPlayer] = React.useState(0);
@@ -55,11 +56,19 @@ const Game = () => {
       if (check.position === target.getAttribute('id')) {
         if (casas[index].checked === false) {
           casas[index].checked = true
-          player % 2 === 0 || player === 0 ? casas[index].player = 'X' : casas[index].player = 'O'
+
+          if(player % 2 === 0 || player === 0) {
+            casas[index].player = 'X';
+            casas[index].name = jogador1;
+
+          } else {
+            casas[index].player = 'O'
+            casas[index].name = jogador2;
+          }
 
           // Checa as combinações possíveis e seta o vencedor
           indexCombination.forEach(combination => {
-            return checked[combination[0]].player !== '' && checked[combination[0]].player === checked[combination[1]].player && checked[combination[1]].player === checked[combination[2]].player ? setWinner({ "winner": true, "player": checked[combination[1]].player, "combination": [combination[0], combination[1], combination[2]] }) : '';
+            return checked[combination[0]].player !== '' && checked[combination[0]].player === checked[combination[1]].player && checked[combination[1]].player === checked[combination[2]].player ? setWinner({ "winner": true, "player": checked[combination[1]].name, "combination": [combination[0], combination[1], combination[2]] }) : '';
           });
 
           setChecked([...casas])
@@ -77,10 +86,9 @@ const Game = () => {
 
   }
 
-  // if (winner.winner) return <div>Temos um vencedor! Saudações ao novo imperador: {winner.player}</div>
-
   return (
     <>
+      <h1>{jogador1} Vs {jogador2}</h1>
       {winner.winner && <div>Temos um vencedor! Saudações ao novo imperador: {winner.player}</div>}
       <Grid>
         {
